@@ -69,6 +69,7 @@ class UserService {
   }
 
   async getMe(refreshToken) {
+    console.log(refreshToken);
     if (!refreshToken) {
       throw ApiError.AnauthorizedError();
     }
