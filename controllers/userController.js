@@ -74,6 +74,7 @@ class UserController {
 
   async getMe(req, res, next) {
     try {
+      console.log(req.headers.authorization);
       const authHeader = req.headers.authorization;
       const refreshToken = authHeader.split(" ")[1];
 
