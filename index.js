@@ -1,4 +1,4 @@
-require("dotenv").config();
+const dotenv = require("dotenv/config");
 const express = require("express");
 const sequelize = require("./db");
 const models = require("./models");
@@ -11,13 +11,10 @@ const PORT = process.env.PORT || 8080;
 
 const app = express();
 
-var whitelist = ["http://localhost:3000", "https://wallets-pt.vercel.app"];
 const corsOptions = {
-  origin: function (origin, callback) {
-    callback(null, true);
-  },
+  origin: "http://localhost:3000",
   credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
+  optionSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 

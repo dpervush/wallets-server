@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 
-const { User, Account } = require("../models/index");
+const { User, Account, AccountCards } = require("../models/index");
 const TokenService = require("./tokenService");
 const UserDto = require("../dtos/userDto");
 const ApiError = require("../exceptions/apiError");
@@ -23,7 +23,7 @@ class UserService {
       password: hashedPassword,
       activationLink,
       firstName,
-      secondName,
+      secondName
     });
     const account = await Account.create({ userId: user.id });
 
@@ -34,13 +34,13 @@ class UserService {
 
     return {
       ...tokens,
-      user: { ...userDto, accountId: account.id },
+      user: { ...userDto, accountId: account.id }
     };
   }
 
   async login(email, password) {
-    const { dataValues: user } = await User.findOne({
-      where: { email },
+    const user = await User.findOne({
+      where: { email }
     });
 
     if (!user) {
@@ -88,12 +88,12 @@ class UserService {
         "firstName",
         "secondName",
         "isActivated",
-        "activationLink",
-      ],
+        "activationLink"
+      ]
     });
 
     const account = await Account.findOne({
-      where: { userId: user.id },
+      where: { userId: user.id }
     });
     if (!account) throw ApiError.BadRequest("Аккаунт не найден");
 

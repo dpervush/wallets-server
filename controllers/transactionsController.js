@@ -6,7 +6,7 @@ class TransactionsController {
     const accountId = getValueFromCookie("accountId", req.headers.cookie);
 
     try {
-      const { title, type, amount, cardId, categoryId } = req.body;
+      const { title, type, amount, date, cardId, categoryId } = req.body;
       const transaction = await transactionsService.create({
         title,
         type,
@@ -14,6 +14,7 @@ class TransactionsController {
         cardId,
         categoryId,
         accountId,
+        date,
       });
       res.json(transaction);
     } catch (e) {
@@ -25,7 +26,21 @@ class TransactionsController {
     const accountId = getValueFromCookie("accountId", req.headers.cookie);
 
     try {
-      const transactions = await transactionsService.getAll(accountId);
+      const {
+        card: cardId,
+        category: categoryId,
+        flow: type,
+        page,
+        size,
+      } = req.query;
+      const transactions = await transactionsService.getAll(
+        accountId,
+        cardId,
+        categoryId,
+        type,
+        page,
+        size
+      );
       return res.json(transactions);
     } catch (e) {
       res.status(500).json(e);
@@ -39,14 +54,25 @@ class TransactionsController {
       res.status(500).json(e);
     }
   }
+  async getLast(req, res) {
+    const accountId = getValueFromCookie("accountId", req.headers.cookie);
+
+    try {
+      const transactions = await transactionsService.getLast(accountId);
+      return res.json(transactions);
+    } catch (e) {
+      res.status(500).json(e);
+    }
+  }
   async update(req, res) {
     try {
-      const { id, title, amount, date, cardId, categoryId } = req.body;
+      const { id, title, amount, type, date, cardId, categoryId } = req.body;
 
       const updatedTransaction = await transactionsService.update({
         id,
         title,
         amount,
+        type,
         date,
         cardId,
         categoryId,

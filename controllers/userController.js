@@ -1,4 +1,7 @@
 const UserService = require("../services/userService");
+const CardsService = require("../services/cardsService");
+const CategoriesService = require("../services/categoriesService");
+
 const { validationResult } = require("express-validator");
 const ApiError = require("../exceptions/apiError.js");
 const getValueFromCookie = require("../utils/getValueFromCookie.js");
@@ -23,9 +26,59 @@ class UserController {
         password
       );
 
+      await CardsService.create({
+        name: "Cash",
+        color: "#8a16ff",
+        balance: 0,
+        currency: "RUB",
+        total: true,
+        icon: "airplane",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "groceries",
+        type: "expense",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "entertainment",
+        type: "expense",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "transport",
+        type: "expense",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "shopping",
+        type: "expense",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "salary",
+        type: "income",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "extra",
+        type: "income",
+        accountId: userData.user.accountId
+      });
+
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 10 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
+        httpOnly: true
+      });
+
+      res.cookie("accountId", userData.user.accountId, {
+        httpOnly: true
       });
 
       return res.json(userData);
@@ -42,11 +95,11 @@ class UserController {
 
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 10 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
+        httpOnly: true
       });
 
       res.cookie("accountId", userData.user.accountId, {
-        httpOnly: true,
+        httpOnly: true
       });
 
       return res.json(userData);
@@ -74,9 +127,12 @@ class UserController {
 
   async getMe(req, res, next) {
     try {
-      console.log(req.headers.authorization);
       const authHeader = req.headers.authorization;
       const refreshToken = authHeader.split(" ")[1];
+      console.log(
+        "-----------------===================---------------- " + authHeader,
+        refreshToken
+      );
 
       const userData = await UserService.getMe(refreshToken);
 
@@ -104,7 +160,7 @@ class UserController {
 
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 10 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
+        httpOnly: true
       });
 
       return res.json(userData);

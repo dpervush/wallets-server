@@ -1,16 +1,18 @@
 const { AccountCategories, CategoryInfo } = require("../models");
 
 class CategoriesService {
-  async create({ title, color, budget, accountId }) {
+  async create({ title, type, color, budget, icon, accountId }) {
     const createdCategory = await AccountCategories.create({
-      accountId,
+      accountId
     });
 
     const categoryInfo = await CategoryInfo.create({
       title,
+      type,
       color,
       budget,
-      accountCategoryId: createdCategory.id,
+      icon,
+      accountCategoryId: createdCategory.id
     });
 
     return { ...createdCategory.dataValues, ...categoryInfo.dataValues };
@@ -19,10 +21,10 @@ class CategoriesService {
   async getAll(accountId) {
     // todo: check if might be deleted
     const categoriesIds = await AccountCategories.findAll({
-      where: { accountId },
+      where: { accountId }
     });
 
-    const categories = await AccountCategories.findAll({
+    const categoriesIncome = await AccountCategories.findAll({
       attributes: ["id", "accountId"],
       where: { accountId },
       include: [
@@ -30,13 +32,29 @@ class CategoriesService {
           model: CategoryInfo,
           required: true,
           attributes: {
-            exclude: ["createdAt", "updatedAt", "accountCategoryId"],
+            exclude: ["createdAt", "updatedAt", "accountCategoryId"]
           },
-        },
-      ],
+          where: { type: "income" }
+        }
+      ]
     });
 
-    return categories;
+    const categoriesExpense = await AccountCategories.findAll({
+      attributes: ["id", "accountId"],
+      where: { accountId },
+      include: [
+        {
+          model: CategoryInfo,
+          required: true,
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountCategoryId"]
+          },
+          where: { type: "expense" }
+        }
+      ]
+    });
+
+    return { categoriesIncome, categoriesExpense };
   }
   async getOne(id) {
     if (!id) {
@@ -48,10 +66,10 @@ class CategoriesService {
           model: CategoryInfo,
           required: true,
           attributes: {
-            exclude: ["createdAt", "updatedAt", "accountCategoryId"],
-          },
-        },
-      ],
+            exclude: ["createdAt", "updatedAt", "accountCategoryId"]
+          }
+        }
+      ]
     });
     return category;
   }
@@ -64,7 +82,7 @@ class CategoriesService {
     const updatedCategory = await CategoryInfo.update(category, {
       where: { accountCategoryId: category.id },
       returning: true,
-      attributes: { exclude: ["createdAt", "updatedAt", "accountCategoryId"] },
+      attributes: { exclude: ["createdAt", "updatedAt", "accountCategoryId"] }
     }).then((result) => result[1][0]);
 
     return updatedCategory;
@@ -76,7 +94,7 @@ class CategoriesService {
     }
 
     const category = await AccountCategories.findOne({
-      where: { id },
+      where: { id }
     });
 
     return await category

@@ -1,19 +1,19 @@
 const { AccountCards, CardInfo } = require("../models");
 
 class CardService {
-  async create({ name, color, number, balance, currency, total, accountId }) {
+  async create({ name, color, balance, currency, total, icon, accountId }) {
     const createdCard = await AccountCards.create({
-      accountId,
+      accountId
     });
 
     const cardInfo = await CardInfo.create({
       name,
       color,
-      number,
       balance,
       currency,
       total,
-      accountCardId: createdCard.id,
+      icon,
+      accountCardId: createdCard.id
     });
 
     return { ...createdCard.dataValues, ...cardInfo.dataValues };
@@ -26,13 +26,14 @@ class CardService {
     const cards = await AccountCards.findAll({
       attributes: ["id", "accountId"],
       where: { accountId },
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: CardInfo,
           required: true,
-          attributes: { exclude: ["createdAt", "updatedAt", "accountCardId"] },
-        },
-      ],
+          attributes: { exclude: ["createdAt", "updatedAt", "accountCardId"] }
+        }
+      ]
     });
 
     return cards;
@@ -46,9 +47,9 @@ class CardService {
         {
           model: CardInfo,
           required: true,
-          attributes: { exclude: ["createdAt", "updatedAt", "accountCardId"] },
-        },
-      ],
+          attributes: { exclude: ["createdAt", "updatedAt", "accountCardId"] }
+        }
+      ]
     });
     return card;
   }
@@ -61,7 +62,7 @@ class CardService {
     const updatedCard = await CardInfo.update(card, {
       where: { accountCardId: card.id },
       returning: true,
-      attributes: { exclude: ["createdAt", "updatedAt", "accountCardId"] },
+      attributes: { exclude: ["createdAt", "updatedAt", "accountCardId"] }
       // plain: true,
     }).then((result) => result[1][0]);
 
@@ -74,7 +75,7 @@ class CardService {
     }
 
     const card = await AccountCards.findOne({
-      where: { id },
+      where: { id }
     });
 
     return await card

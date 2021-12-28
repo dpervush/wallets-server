@@ -1,4 +1,6 @@
 const ApiError = require("../exceptions/apiError.js");
+const getValueFromCookie = require("../utils/getValueFromCookie.js");
+
 const TokenService = require("../services/tokenService");
 
 module.exports = function (req, res, next) {
@@ -8,12 +10,13 @@ module.exports = function (req, res, next) {
       return next(ApiError.AnauthorizedError());
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = getValueFromCookie("refreshToken", req.headers.cookie);
     if (!token) {
       return next(ApiError.AnauthorizedError());
     }
 
     let userData = TokenService.validateAccessToken(token);
+
     if (!userData) {
       userData = TokenService.validateRefreshToken(token);
 

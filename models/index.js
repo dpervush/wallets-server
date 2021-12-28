@@ -8,23 +8,23 @@ const User = sequelize.define("user", {
   firstName: { type: DataTypes.STRING, allowNull: false },
   secondName: { type: DataTypes.STRING, allowNull: false },
   isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
-  activationLink: { type: DataTypes.STRING },
+  activationLink: { type: DataTypes.STRING }
 });
 
 const Account = sequelize.define("account", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }
 });
 
 const AccountCards = sequelize.define("account_cards", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }
 });
 
 const AccountCategories = sequelize.define("account_categories", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }
 });
 
 const AccountTransactions = sequelize.define("account_transactions", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }
 });
 
 const CardInfo = sequelize.define("card_info", {
@@ -35,13 +35,16 @@ const CardInfo = sequelize.define("card_info", {
   balance: { type: DataTypes.INTEGER, defaultValue: 0 },
   currency: { type: DataTypes.STRING, defaultValue: "RUB" },
   total: { type: DataTypes.BOOLEAN, defaultValue: true },
+  icon: { type: DataTypes.STRING }
 });
 
 const CategoryInfo = sequelize.define("category_info", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: DataTypes.STRING, allowNull: false },
   color: { type: DataTypes.STRING },
+  type: { type: DataTypes.STRING },
   budget: { type: DataTypes.INTEGER },
+  icon: { type: DataTypes.STRING }
 });
 
 const TransactionInfo = sequelize.define("transaction_info", {
@@ -49,7 +52,7 @@ const TransactionInfo = sequelize.define("transaction_info", {
   title: { type: DataTypes.STRING, allowNull: false },
   type: { type: DataTypes.STRING, allowNull: false },
   amount: { type: DataTypes.INTEGER, allowNull: false },
-  date: { type: DataTypes.DATE, defaultValue: Date.now },
+  date: { type: DataTypes.DATE, defaultValue: Date.now }
 });
 
 // const TransactionCard = sequelize.define("transaction_card", {
@@ -62,7 +65,7 @@ const TransactionInfo = sequelize.define("transaction_info", {
 
 const Token = sequelize.define("token", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  refreshToken: { type: DataTypes.STRING, allowNull: false },
+  refreshToken: { type: DataTypes.STRING, allowNull: false }
 });
 
 // user - account
@@ -70,14 +73,14 @@ const Token = sequelize.define("token", {
 User.hasOne(Token, {
   foreignKeyConstraint: true,
   onDelete: "cascade",
-  hooks: true,
+  hooks: true
 });
 Token.belongsTo(User);
 
 User.hasOne(Account, {
   foreignKeyConstraint: true,
   onDelete: "cascade",
-  hooks: true,
+  hooks: true
 });
 Account.belongsTo(User);
 
@@ -99,21 +102,21 @@ AccountTransactions.belongsTo(AccountCategories);
 AccountCards.hasOne(CardInfo, {
   foreignKeyConstraint: true,
   onDelete: "cascade",
-  hooks: true,
+  hooks: true
 });
 CardInfo.belongsTo(AccountCards);
 
 AccountCategories.hasOne(CategoryInfo, {
   foreignKeyConstraint: true,
   onDelete: "cascade",
-  hooks: true,
+  hooks: true
 });
 CategoryInfo.belongsTo(AccountCategories);
 
 AccountTransactions.hasOne(TransactionInfo, {
   foreignKeyConstraint: true,
   onDelete: "cascade",
-  hooks: true,
+  hooks: true
 });
 TransactionInfo.belongsTo(AccountTransactions);
 
@@ -126,5 +129,5 @@ module.exports = {
   AccountTransactions,
   CardInfo,
   CategoryInfo,
-  TransactionInfo,
+  TransactionInfo
 };

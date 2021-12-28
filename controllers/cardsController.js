@@ -6,7 +6,7 @@ class CardController {
     const accountId = getValueFromCookie("accountId", req.headers.cookie);
 
     try {
-      const { name, color, number, balance, currency, total } = req.body;
+      const { name, color, icon, number, balance, currency, total } = req.body;
       const card = await cardsService.create({
         name,
         color,
@@ -14,7 +14,8 @@ class CardController {
         balance,
         currency,
         total,
-        accountId,
+        icon,
+        accountId
       });
       res.json(card);
     } catch (e) {
